@@ -35,7 +35,7 @@
 					e.preventDefault();
 					var id = $(this).attr('href');
 
-					methods.show(id);
+					$(id).kModal('show');
 				});
 			}
 			
