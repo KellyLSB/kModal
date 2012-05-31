@@ -55,7 +55,9 @@
 			if(settings['close-button']) {
 				$('.kmodal .close').click(function(e) {
 					e.preventDefault();
-					$(this).closest('.kmodal').kModal('hide');
+					$('.kmodal').each(function() {
+						$(this).kModal('hide');
+					});
 				});
 			}
 
@@ -138,7 +140,7 @@
 		hide : function(callback, fademask) {
 
 			/**
-			 * Fade out the element
+			 * Fade out the modal
 			 */
 			$(this).fadeOut(settings['fade-time']);
 
