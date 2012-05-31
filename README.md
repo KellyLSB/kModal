@@ -32,3 +32,10 @@ When intializing kModal with `$(document).kModal('init' [, options]);` you can p
 		'fade-time':500, // How long does it take to fade in / out
 		'modal-z-index': 11 // Modal Z-Index level
 	}
+
+License
+=======
+kModal by Kelly Lauren Summer Becker is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
+Permissions beyond the scope of this license may be available at http://kellybecker.me.
+
+[<img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" alt="BY-SA" title="BY-SA">](http://creativecommons.org/licenses/by-sa/3.0/)
