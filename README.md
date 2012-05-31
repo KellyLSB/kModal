@@ -17,6 +17,10 @@ This will append all the needed kModal elements, and set their default styles. A
 	$(_element-id_).kModal('hide'); // Closes the modal
 	$(_element-id_).kModal('resize'); // Repositions the modal (if you resize the modal for any reason you need to call this)
 
+Caputuring the element resize event automatically
+-------------------------------------------------
+For some odd reason jQuery has restricted the .resize() event to only be available on the window. So to make kModal automatically detect the resize event you need to include [this plugin](http://benalman.com/projects/jquery-resize-plugin/).
+
 Setting Options
 ===============
 When intializing kModal with `$(document).kModal('init' [, options]);` you can pass the following options as a JSON object.

@@ -104,7 +104,15 @@
 			 * Fade in the modal and the mask
 			 */
 			$('#kmodal_mask').fadeTo(settings['fade-time'], settings['mask-opacity']);
-			$(this).fadeIn(settings['fade-time']);			
+			$(this).fadeIn(settings['fade-time']);
+
+			/**
+			 * Start tracking window resizing and accomodate
+			 */
+			$(this).resize(function() {
+				$(this).kModal('resize');
+			});
+
 		},
 		hide : function(callback) {
 
