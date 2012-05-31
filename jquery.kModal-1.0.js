@@ -127,19 +127,19 @@
 			/**
 			 * Get the document height for the mask
 			 */
-			var maskHeight = $(document).height();
+			var maskHeight = $(document).outerHeight();
 
 			/**
 			 * Get window size
 			 */
-			var winW = $(window).width();
-			var winH = $(window).height();
+			var winW = $(window).outerWidth();
+			var winH = $(window).outerHeight();
 
 			/**
 			 * Get modal size
 			 */
-			var modW = $(this).width();
-			var modH = $(this).height();
+			var modW = $(this).outerWidth();
+			var modH = $(this).outerHeight();
 
 			/**
 			 * Calculate position the modal needs to be in
