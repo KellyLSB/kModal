@@ -55,9 +55,7 @@
 			if(settings['close-button']) {
 				$('.kmodal .close').click(function(e) {
 					e.preventDefault();
-					$('.kmodal').each(function() {
-						$(this).kModal('hide');
-					});
+					$(this).closest('.kmodal').kModal('hide');
 				});
 			}
 
@@ -86,10 +84,29 @@
 					}
 				});
 			}
-			
 		},
 		show : function(callback) {
-			
+
+			/**
+			 * If the kModal instance is undefined set it to false
+			 */
+			if(window.kModalInstance === undefined)
+				window.kModalInstance = false;
+
+			/**
+			 * If an instance already exists remove it
+			 */
+			if(window.kModalInstance !== false) {
+				var tmp = $(this);
+
+				/**
+				 * Fade out the existing instance and fade in the new one
+				 */
+				window.kModalInstance.kModal('hide', function() {
+					return tmp.kModal('show');	
+				}, false);	
+			}
+
 			/**
 			 * Resize the modal and position it
 			 */
@@ -113,14 +130,29 @@
 				$(this).kModal('resize');
 			});
 
+			/**
+			 * Add to the list of instances
+			 */
+			window.kModalInstance = $(this);
 		},
-		hide : function(callback) {
+		hide : function(callback, fademask) {
+
+			/**
+			 * Fade out the element
+			 */
+			$(this).fadeOut(settings['fade-time']);
 
 			/**
 			 * Fade out the modal and the mask
 			 */
-			$('#kmodal_mask').fadeOut(settings['fade-time']);
-			$(this).fadeOut(settings['fade-time']);
+			if(fademask === undefined || fademask === true)
+				$('#kmodal_mask').fadeOut(settings['fade-time']);
+
+			/**
+			 * Unset the instace from the window
+			 */
+			window.kModalInstance = false;
+			
 		},
 		resize : function(callback) {
 
