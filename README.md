@@ -19,7 +19,7 @@ This will append all the needed kModal elements, and set their default styles. A
 
 Caputuring the element resize event automatically
 -------------------------------------------------
-For some odd reason jQuery has restricted the .resize() event to only be available on the window. So to make kModal automatically detect the resize event you need to include [this plugin](http://benalman.com/projects/jquery-resize-plugin/).
+For some odd reason jQuery has restricted the .resize() event to only be available on the window. So to make kModal automatically detect the resize event you need to include Ben Alman's [jQuery resize event plugin](http://benalman.com/projects/jquery-resize-plugin/).
 
 Setting Options
 ===============
