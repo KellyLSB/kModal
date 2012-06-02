@@ -50,10 +50,10 @@
 			}
 			
 			/**
-			 * If a close button exists on the modal then close when it is clicked
+			 * If a close button exists on the model then close when it is clicked
 			 */
 			if(settings['close-button']) {
-				$('.kmodal .close').click(function(e) {
+				$('.close').click(function(e) {
 					e.preventDefault();
 					$('.kmodal').each(function() {
 						$(this).kModal('hide');
