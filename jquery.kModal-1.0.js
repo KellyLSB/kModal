@@ -168,12 +168,16 @@
 			 */
 			var winW = $(window).outerWidth();
 			var winH = $(window).outerHeight();
+			if(isNaN(winW)) winW = $(window).width();
+			if(isNaN(winH)) winW = $(window).height();
 
 			/**
 			 * Get modal size
 			 */
 			var modW = $(this).outerWidth();
 			var modH = $(this).outerHeight();
+			if(isNaN(modW)) winW = $(this).width();
+			if(isNaN(modH)) winW = $(this).height();
 
 			/**
 			 * Calculate position the modal needs to be in
