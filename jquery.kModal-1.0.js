@@ -183,8 +183,8 @@
 			 * Calculate position the modal needs to be in
 			 */
 			var resize = {
-				"top": (winH / 2) - (modH / 2),
-				"left": (winW / 2) - (modW / 2)
+				"top": Math.round((winH / 2) - (modH / 2)),
+				"left": Math.round((winW / 2) - (modW / 2))
 			};
 
 			/**
