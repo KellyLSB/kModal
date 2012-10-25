@@ -1,6 +1,7 @@
 (function( $ ) {
 	
 	var settings;
+	var scrollPosition;
 	
 	var methods = {
 		init : function(options) {
@@ -19,6 +20,7 @@
 				'bind-link':1,
 				'fade-time':500,
 				'modal-z-index': 11,
+				'fixed-top': false
 			} , options);
 			
 			/**
@@ -90,6 +92,11 @@
 		show : function(callback) {
 
 			/**
+			 * Get modal object
+			 */
+			var $modal = $(this);
+
+			/**
 			 * If the kModal instance is undefined set it to false
 			 */
 			if(window.kModalInstance === undefined)
@@ -99,7 +106,7 @@
 			 * If an instance already exists remove it
 			 */
 			if(window.kModalInstance !== false) {
-				var tmp = $(this);
+				var tmp = $modal;
 
 				/**
 				 * Fade out the existing instance and fade in the new one
@@ -112,30 +119,64 @@
 			/**
 			 * Resize the modal and position it
 			 */
-			$(this).kModal('resize');
+			$modal.kModal('resize');
 			
 			/**
 			 * Add the kmodal class to the modal
 			 */
-			$(this).addClass('kmodal');
-		
-			/**
-			 * Fade in the modal and the mask
-			 */
-			$('#kmodal_mask').fadeTo(settings['fade-time'], settings['mask-opacity']);
-			$(this).fadeIn(settings['fade-time']);
+			$modal.addClass('kmodal');
 
 			/**
-			 * Start tracking window resizing and accomodate
+			 * Get scroll position
 			 */
-			$(this).resize(function() {
-				$(this).kModal('resize');
+			var scrollPosition = function(d) {
+				if(settings['fixed-top'] !== false) {
+					scrollPosition = [0,0];
+					$(window).scrollTo(0,0);
+				}
+
+				else scrollPosition = [
+					self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+					self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+				];
+			};
+
+			/**
+			 * Fade in Modal
+			 */
+			var fadeInModal = function(d) {
+				
+				/**
+			 	 * Fade in the modal and the mask
+			 	 */
+				$('#kmodal_mask').fadeTo(settings['fade-time'], settings['mask-opacity']);
+				$modal.fadeIn(settings['fade-time']);
+
+				/**
+			 	 * Start tracking window resizing and accomodate
+			 	 */
+				$modal.resize(function() {
+					$modal.kModal('resize');
+				});
+			};
+
+			$.defercall(scrollPosition, fadeInModal).done(function() {
+
+				// Lock the scroll poisition
+				var html = jQuery('html');
+				html.data('scroll-position', scrollPosition);
+				html.data('previous-overflow', html.css('overflow'));
+				html.css('overflow', 'hidden');
+
+				// Hack for browsers
+				if(settings['fixed-top'] === false)
+					$(window).scrollTo(scrollPosition[0], scrollPosition[1]);
 			});
 
 			/**
 			 * Add to the list of instances
 			 */
-			window.kModalInstance = $(this);
+			window.kModalInstance = $modal;
 		},
 		hide : function(callback, fademask) {
 
@@ -143,6 +184,14 @@
 			 * Fade out the modal
 			 */
 			$(this).fadeOut(settings['fade-time']);
+
+			/**
+			 * Unlock scroll position
+			 */
+			var html = jQuery('html');
+			var scrollPosition = html.data('scroll-position');
+			html.css('overflow', html.data('previous-overflow'));
+			window.scrollTo(scrollPosition[0], scrollPosition[1])
 
 			/**
 			 * Fade out the modal and the mask
@@ -188,6 +237,15 @@
 			};
 
 			/**
+			 * Determine the fixation for the modal
+			 */
+			if(settings['fixed-top'] !== false) {
+				resize.top = settings['fixed-top'];
+				$(this).css('position', 'absolute');
+			}
+			else $(this).css('position', 'fixed');
+
+			/**
 			 * Set the height and width of the mask
 			 */
 			$('#kmodal_mask').css({
@@ -198,7 +256,6 @@
 			/**
 			 * Set the new values to the modal
 			 */
-			$(this).css('position', 'fixed');
 			$(this).animate(resize, settings['fade-time']);
 			$(this).css('z-index', settings['modal-z-index']);
 
