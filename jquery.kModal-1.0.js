@@ -2,6 +2,7 @@
 	
 	var settings;
 	var scrollPosition;
+	var binds;
 	
 	var methods = {
 		init : function(options) {
@@ -177,13 +178,21 @@
 			 * Add to the list of instances
 			 */
 			window.kModalInstance = $modal;
+
+			// Run callbacks
+			for(var i in binds[$modal]['show']) {
+				callback = binds[$modal]['show'][i];
+				callback($modal);
+			}
 		},
 		hide : function(callback, fademask) {
+
+			var $modal = $(this);
 
 			/**
 			 * Fade out the modal
 			 */
-			$(this).fadeOut(settings['fade-time']);
+			$modal.fadeOut(settings['fade-time']);
 
 			/**
 			 * Unlock scroll position
@@ -203,9 +212,17 @@
 			 * Unset the instace from the window
 			 */
 			window.kModalInstance = false;
+
+			// Run callbacks
+			for(var i in binds[$modal]['hide']) {
+				callback = binds[$modal]['hide'][i];
+				callback($modal);
+			}
 			
 		},
 		resize : function(callback) {
+
+			var $modal = $(this);
 
 			/**
 			 * Get the document height for the mask
@@ -223,10 +240,10 @@
 			/**
 			 * Get modal size
 			 */
-			var modW = $(this).outerWidth();
-			var modH = $(this).outerHeight();
-			if(isNaN(modW)) modW = $(this).width();
-			if(isNaN(modH)) modH = $(this).height();
+			var modW = $modal.outerWidth();
+			var modH = $modal.outerHeight();
+			if(isNaN(modW)) modW = $modal.width();
+			if(isNaN(modH)) modH = $modal.height();
 
 			/**
 			 * Calculate position the modal needs to be in
@@ -236,33 +253,70 @@
 				"left": Math.round((winW / 2) - (modW / 2))
 			};
 
-			/**
-			 * Determine the fixation for the modal
-			 */
-			if(settings['fixed-top'] !== false) {
-				resize.top = settings['fixed-top'];
-				$(this).css('position', 'absolute');
-			}
-			else $(this).css('position', 'fixed');
+			// Create a deferend
+			var defer = $.defercall(function(deferend) {
 
-			/**
-			 * Set the height and width of the mask
-			 */
-			$('#kmodal_mask').css({
-				'width': winW,
-				'height': maskHeight,
+				// If we need to resize and position the modal
+				if($modal.attr('kmodal-resize') == 'false')
+					return false;
+
+				// Determine the fixation for the modal
+				if(settings['fixed-top'] !== false) {
+					resize.top = settings['fixed-top'];
+					$modal.css('position', 'absolute');
+				}
+				else $modal.css('position', 'fixed');
 			});
 
-			/**
-			 * Set the new values to the modal
-			 */
-			$(this).animate(resize, settings['fade-time']);
-			$(this).css('z-index', settings['modal-z-index']);
+			// If the deferend passes run
+			defer.then(function() {
+
+				// Animating the resizing of the modal
+				$modal.animate(resize, settings['fade-time']);
+			});
+
+			// Always Run
+			defer.always(function() {
+
+				// Set the height and width of the mask
+				$('#kmodal_mask').css({
+					'width': winW,
+					'height': maskHeight,
+				});
+
+				// Apply the Z-Index to the modal
+				$modal.css('z-index', settings['modal-z-index']);
+			});
+
+			// Run callbacks
+			for(var i in binds[$modal]['resize']) {
+				callback = binds[$modal]['resize'][i];
+				callback($modal);
+			}
 
 			/**
 			 * Return the position values
 			 */
 			return resize;
+		},
+		bind : function(type, callback) {
+
+			$modal = this;
+
+			// If undefined create an object
+			if(binds == undefined)
+				binds = new Object;
+			if(binds[$modal] == undefined)
+				binds[$modal] = new Object;
+			if(binds[$modal][type] == undefined)
+				binds[$modal][type] = new Array;
+
+			// Append the call back to an array
+			if($.isFunction(callback))
+				binds[$modal][type].push(callback);
+
+			// Return true
+			return true;
 		}
 	}
 	
