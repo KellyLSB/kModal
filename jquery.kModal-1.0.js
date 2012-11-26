@@ -91,6 +91,17 @@
 			}
 		},
 		show : function(callback) {
+			
+			/**
+			 * Create binds
+			 */
+			$modal = this;
+
+			// If undefined create an object
+			if(binds == undefined)
+				binds = new Object;
+			if(binds[$modal] == undefined)
+				binds[$modal] = new Object;
 
 			/**
 			 * Get modal object
